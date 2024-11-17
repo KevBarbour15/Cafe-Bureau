@@ -1,0 +1,140 @@
+{% if cart.item_count > 0 %}
+<div class="cart">
+  <!-- <h1>{{ 'cart.general.title' | t }}</h1> -->
+
+  <form action="/cart" method="post" novalidate>
+    {% for item in cart.items %}
+    <div class="row item">
+      <div class="column" data-label="{{ 'customer.order.product' | t }}">
+        <!-- product image -->
+        {% if item.image != blank %}
+        <a class="image" href="{{ item.url | within: collections.all }}">
+          {{ item.variant.image | img_url: "master" | img_tag: item.title }}
+        </a>
+        {% endif %}
+      </div>
+      <div class="column" data-label="Information">
+        <!-- product title -->
+        <a class="title" href="{{ item.url }}">
+          <p>{{ item.product.title }}</p>
+          {% if item.original_line_price != item.line_price %}
+          <p class="visually-hidden" style="color: red;">
+            {{ "cart.label.discounted_price" | t }}
+          </p>
+          {{ item.price | money }}
+          <p class="visually-hidden" style="color: red;">
+            {{ "cart.label.original_price" | t }}
+          </p>
+          <s>{{ item.original_price | money }}</s>
+          {% else %}
+          <p style="color: red;">{{ item.price | money }}</p>
+          {% endif %}
+        </a>
+      </div>
+      <div class="column" data-label="Options">
+        <!-- Product Information -->
+        <div class="information">
+          <!-- variant information -->
+          {% for option in item.product.options_with_values reversed %}
+          <!-- check to see if item has color -->
+          {% if option.name == 'Color' or option.name == 'color' or option.name
+          == 'Colors' or option.name == 'colors' %}
+          <!-- Color -->
+          <!-- find which variant option is color -->
+          {% if forloop.index == 1 %}
+          <div
+            class="color"
+            style="background-color: {{ item.variant.option2 }};"
+          ></div>
+          {% elsif forloop.index == 2 %}
+          <div
+            class="color"
+            style="background-color: {{ item.variant.option1 }};"
+          ></div>
+          {% endif %} {% elsif option.name == 'Size' or option.name == 'size' or
+          option.name == 'Sizes' or option.name == 'sizes'%}
+          <!-- Size -->
+          <!-- find which variant option is color -->
+          {% if forloop.index == 1 %}
+          <div class="size">{{ item.variant.option2 }}</div>
+          {% elsif forloop.index == 2 %}
+          <div class="size">{{ item.variant.option1 }}</div>
+          {% endif %}
+          <!-- <div class="size">{{ item.variant.option1 }}</div> -->
+          {% endif %} {% endfor %}
+        </div>
+      </div>
+      <div class="column" data-label="Quantity">
+        <!-- <p>{{ item.quantity }}</p> -->
+        <input
+          class="quantity"
+          type="number"
+          name="updates[]"
+          id="updates_{{ item.key }}"
+          value="{{ item.quantity }}"
+          min="0"
+          aria-label="{{ 'cart.general.item_quantity' | t }}"
+        />
+      </div>
+      <div class="column" data-label="Subtotal">
+        <p>{{ item.line_price | money }}</p>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="subtotal">
+      <p>Total</p>
+      <p><span class="wcp-original-cart-total">{{ cart.total_price | money}}</span>
+            <span class="wcp-cart-total"></span>
+            <div class="additional-notes">
+                <span class="wcp-minimums-note"></span>
+                <span class="wcp-extra-note "></span>
+            </div>{% render "wcp_multi_currency_msg" %}</p>
+      {% if cart.total_discounts > 0 %}
+      <p>{{ "cart.general.savings" | t }} {{ cart.total_discounts | money }}</p>
+      {% endif %}
+    </div>
+    <p class="shipping-at-checkout">
+      {{ "cart.general.shipping_at_checkout" | t }}
+    </p>
+    <div class="actions">
+      <div class="button">
+        <input
+          type="submit"
+          name="update"
+          value="{{ 'cart.general.update' | t }}"
+        />
+      </div>
+      <div class="button">
+        <input
+          type="submit"
+          name="checkout"
+          value="{{ 'cart.general.checkout' | t }}"
+        />
+      </div>
+    </div>
+  </form>
+</div>
+{% else %}
+<div class="cart">
+  <h1>{{ "cart.general.title" | t }}</h1>
+
+  {% comment %} Cart empty state {% endcomment %}
+  <div class="supports-cookies">
+    <p>{{ "cart.general.empty" | t }}</p>
+    <p>{{ "cart.general.continue_browsing_html" | t }}</p>
+  </div>
+
+  {% comment %} Cart no cookies state --------------------- Browser cookies are
+  required to use the cart. If cookies aren't enabled in the browser a message
+  is displayed prompting the user to enable them. {% endcomment %}
+  <div class="supports-no-cookies">
+    <p>{{ "cart.general.cookies_required" | t }}</p>
+  </div>
+</div>
+{% endif %}
+
+
+<script src="https://widget.sezzle.com/v1/javascript/price-widget?uuid=a4be0714-ff5b-4e72-a844-62ad2a1a5ae4"></script>
+<script src='https://widget.sezzle.com/v1/javascript/price-widget?uuid=a4be0714-ff5b-4e72-a844-62ad2a1a5ae4'></script>
+
+{% section 'sezzle-widget' %}

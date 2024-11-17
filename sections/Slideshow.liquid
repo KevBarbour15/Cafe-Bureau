@@ -1,0 +1,38 @@
+
+<div class="banner_main_image_sec">
+  {% if section.settings.main_image_sec !=blank %}
+  <img src="{{ section.settings.main_image_sec | img_url : 'master' }}">
+  {% endif %}
+  <div class="button_main_sec">
+   <a href="#scroll_section"> <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 100 80" fill="none">
+<path d="M3 2L50 77.5L97.5 2" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+</svg></path>
+   </a>
+  </div>
+</div>
+
+     
+
+{% schema %}
+  {
+    "name": "Slideshow",
+    "settings": [
+      {
+        "type":"image_picker",
+        "id":"main_image_sec",
+        "label":"Image"
+      }
+    ],
+  "presets": [
+    {
+      "name": "Slideshow"
+    }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

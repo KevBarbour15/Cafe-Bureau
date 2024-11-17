@@ -1,0 +1,95 @@
+<div class="Image-block">
+  <div class="item">
+    <div class="Image-block_wrapper">
+      {% for block in section.blocks %}
+        <style>
+          .custom-loop-{{ forloop.index }} {
+            width:{{ block.settings.width }}% ;
+          }
+        </style>
+        <a href="{{ block.settings.link }}">
+          <div class="block_first_image custom-loop-{{ forloop.index }}">
+            {% if block.settings.image1 != blank %}
+              <img src ={{ block.settings.image1 | img_url:'master' }}>
+              <div class="block_first_image_content" >
+                <p>{{ block.settings.heading1 }}</p>
+                <a href="{{ block.settings.link }}">{{ block.settings.anchor }}</a>
+              </div>
+            {% endif %}
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Image Block",
+    "settings": [],
+    "blocks":[
+      {
+        "type":"gallary",
+        "name":"Gallery",
+        "settings":[
+          {
+            "type":"image_picker",
+            "id":"image1",
+            "label":"Image"
+          },
+          {
+            "type":"text",
+            "id":"heading1",
+            "label":"Heading"
+          },
+          {
+            "type":"text",
+            "id":"anchor",
+            "label":"Text"
+          },
+           {
+            "type":"url",
+            "id":"link",
+            "label":"URL"
+          },
+          {
+            "type":"select",
+            "id":"width",
+            "options":[
+                {
+                  "value": "100",
+                  "label": "100%"
+                },
+               {
+                  "value": "50",
+                  "label": "50%"
+                },
+                {
+                  "value": "33",
+                  "label": "33%"
+                },
+                {
+                  "value": "25",
+                  "label": "25%"
+                }
+              ],
+            "default":"50",
+            "label":"Width"
+          }
+        ]
+      }
+    ],
+    "presets":[
+      {
+        "name":"Image Block"
+      }
+    ]
+  }
+{% endschema %}
+
+
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

@@ -1,0 +1,11 @@
+{%- if link -%}
+  <a class="link" href="{{ link.url }}">
+    <div class="arrow"><p>↳</p></div>
+    <div><p>{{ link.title }}</p></div>
+  </a>
+{%- else -%}
+  <a class="link" href="{{ url }}">
+    <div class="arrow"><p>↳</p></div>
+    <div><p>{{ title }}</p></div>
+  </a>
+{%- endif -%}

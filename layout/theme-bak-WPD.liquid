@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="no-js supports-no-cookies" lang="{{ shop.locale }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="{{ settings.color_accent }}" />
+    <link rel="canonical" href="{{ canonical_url }}" />
+
+    {%- if settings.favicon != blank -%}
+    <link
+      rel="shortcut icon"
+      href="{{ settings.favicon | img_url: '32x32' }}"
+      type="image/png"
+    />
+    {%- endif -%} {%- capture seo_title -%}
+    {{
+      page_title
+    }}
+    {%- if current_tags -%} {%- assign meta_tags = current_tags | join: ', ' -%}
+    &ndash;
+    {{ 'general.meta.tags' | t: tags: meta_tags -}}
+    {%- endif -%} {%- if current_page != 1 -%} &ndash;
+    {{
+      "general.meta.page" | t: page:current_page
+    }}
+    {%- endif -%} {%- assign escaped_page_title = page_title | escape -%} {%-
+    unless escaped_page_title contains shop.name -%} &ndash;
+    {{
+      shop.name
+    }}
+    {%- endunless -%} {%- endcapture -%}
+    <title>{{ seo_title | strip }}</title>
+
+    {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}" />
+    {%- endif -%} {% include 'social-meta-tags' %} {% include 'style-tags',
+    layout: 'theme' %} {% include 'css-variables' %}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', '');
+
+      window.theme = {
+        strings: {
+          addToCart: {{ 'products.product.add_to_cart' | t | json }},
+          soldOut: {{ 'products.product.sold_out' | t | json }},
+          unavailable: {{ 'products.product.unavailable' | t | json }}
+        },
+        moneyFormat: {{ shop.money_format | json }}
+      };
+    </script>
+
+    {% include 'script-tags', layout: 'theme' %}
+
+    {{
+      content_for_header
+    }}
+
+    <!-- custom code for shopify integrations -->
+    <script id="mcjs">
+      !(function(c, h, i, m, p) {
+        (m = c.createElement(h)),
+          (p = c.getElementsByTagName(h)[0]),
+          (m.async = 1),
+          (m.src = i),
+          p.parentNode.insertBefore(m, p);
+      })(
+        document,
+        "script",
+        "https://chimpstatic.com/mcjs-connected/js/users/ee3429aecf3c6e56f44663db0/f3f476a53d0266106085cd3a0.js"
+      );
+    </script>
+
+    <!-- custom code for automizely -->
+    <!-- <script>
+      (function(a, u, t, o, m, i, z, e, l, y) {
+        a[m] =
+          a[m] ||
+          function() {
+            (a[m].s = a[m].s || []).push(arguments);
+          };
+        i = u.createElement(t);
+        i.async = 1;
+        z = u.getElementsByTagName(t)[0];
+        i.src = o + "?o=" + m;
+        z.parentNode.insertBefore(i, z);
+      })(
+        window,
+        document,
+        "script",
+        "https://sdks.automizely.com/conversions/v1/conversions.js",
+        "conversions"
+      );
+      conversions("id", "");
+    </script> -->
+  </head>
+
+  <body
+    id="{{ page_title | handle }}"
+    class="template-{{ template.name | handle }}"
+  >
+    <a class="in-page-link visually-hidden skip-link" href="#MainContent">{{
+      "general.accessibility.skip_to_content" | t
+    }}</a>
+
+    {% section 'email-popup' %} {% section 'header' %}
+
+    <main role="main" id="MainContent">
+      {{ content_for_layout }}
+    </main>
+    
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>   
+    <script>
+$(document).ready(function(){
+  
+   $(document).on("click",".custom_swaches",function() {
+   
+    var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+   };
+   
+    setTimeout(function(){ 
+        var tech = getUrlParameter('variant');
+        $('#product_variants').val(tech);
+     }, 500);
+   
+  });
+  
+   $(document).on("click",".waches_color",function() {
+   
+    var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+   };
+   
+    setTimeout(function(){ 
+        var techss = getUrlParameter('variant');
+        $('#product_variants').val(techss);
+     }, 500);
+   
+  });
+  
+});
+</script>
+
+    {% section 'footer' %}
+  </body>
+</html>

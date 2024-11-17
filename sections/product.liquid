@@ -1,0 +1,254 @@
+<section data-section-id="{{ section.id }}" data-section-type="product">
+
+  {%- assign current_variant = product.selected_or_first_available_variant -%}
+  {%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
+
+  {% assign firstVariantFound = false %}
+  {% if product.images.size > 0 %}
+    <div class="images">
+      <!-- show arrow to scroll if more than one photo -->
+      {% if product.images.size > 1 %}
+        <div class="right-scroll-pointer">
+          ↳
+        </div>
+      {% endif %}
+      {% for image in product.images %}
+          <!-- if only one image, display and break -->
+          {% if image.first == true and image.last == true %}
+            <img class="image" src="{{ image.src | img_url: 'master' }}" alt="{{ image.alt | escape }}">
+            {% break %}
+          <!-- leading images before any variants -->
+          {% elsif image.attached_to_variant? == false and firstVariantFound == false %}
+            <img class="image" src="{{ image.src | img_url: 'master' }}" alt="{{ image.alt | escape }}">
+          <!-- featured variant image -->
+          {% elsif image.attached_to_variant? == true %}
+
+            <!-- find value for color of corresponding variant -->
+            {% for product_option in product.options_with_values %}
+              {% if product_option.name == 'Color' %}
+                {% if product_option.position == 1 %}
+                  {% assign variantColor = image.variants[0].option1 %}
+                {% elsif product_option.position == 2 %}
+                  {% assign variantColor = image.variants[0].option2 %}
+                {% elsif product_option.position == 3 %}
+                  {% assign variantColor = image.variants[0].option3 %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+
+            <!-- open section if first variant of group-->
+            <!-- determine if currently selected variant color should be hidden or displayed-->
+            {% capture wrapper_class %}
+              {% for product_option in product.options_with_values %}
+                {% if product_option.name == 'Color' %}
+                  {% if product_option.position == 1 %}
+                    {% if image.variants[0].option1 == product_option.selected_value %}
+                      show
+                    {% else %}
+                      hide
+                    {% endif %}
+                  {% elsif product_option.position == 2 %}
+                    {% if image.variants[0].option2 == product_option.selected_value %}
+                      show
+                    {% else %}
+                      hide
+                    {% endif %}
+                  {% elsif product_option.position == 3 %}
+                    {% if image.variants[0].option3 == product_option.selected_value %}
+                      show
+                    {% else %}
+                      hide
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            {% endcapture %}
+
+            <!-- add image -->
+            <img class="image variant variant-featured {{- wrapper_class -}}" src="{{ image.src | img_url: 'master' }}" color="{{ variantColor}}" alt="{{ image.alt | escape }}">
+
+            <!-- set first variant found if false -->
+            {% if firstVariantFound == false %}
+              {% assign firstVariantFound = true %}
+            {% endif %}
+          {% else %}
+            <img class="image variant {{- wrapper_class -}}" src="{{ image.src | img_url: 'master' }}" color="{{variantColor}}" alt="{{ image.alt | escape }}">
+          {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="information">
+    {% form 'product', product, data-product-form: '', data-product-handle: product.handle, data-enable-history-state: 'true' %}
+    
+  <input type="hidden" name="id" id="product_variants" value="{{ product.variants.first.id }}">
+    
+    <div class="price-and-title mobile">
+      <div data-price-wrapper>
+          <span data-product-price>
+            {{ current_variant.price | money }}
+          </span>
+          {% if product.compare_at_price_max > product.price %}
+            <span class="visually-hidden" data-compare-text>{{ 'products.product.regular_price' | t }}</span>
+            <s data-compare-price>
+              {% if current_variant.compare_at_price > current_variant.price %}
+                {{ current_variant.compare_at_price | money }}
+              {% endif %}
+            </s>
+          {% endif %}
+      </div>
+      <p> — </p>
+      <p>{{ product.title }}</p>
+    </div>
+    
+    
+  {% comment %}
+    <div class="actions">
+      <!-- Add to Cart -->
+      <button class="button"
+        type="submit"
+        name="add"
+        data-submit-button
+        {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+          <p data-submit-button-text>
+            {% if current_variant.available %}
+              {{ 'products.product.add_to_cart' | t }}
+            {% else %}
+              {{ 'products.product.sold_out' | t }}
+            {% endif %}
+          </p>
+      </button>
+    </div>
+{% endcomment %}
+      <div class="three-column-row">
+
+
+        <!-- variant options -->
+        <div class="variants">
+          <div class="options">
+            {% unless product.has_only_default_variant %}
+              {% for option in product.options_with_values reversed %}
+                <!-- Color Options -->
+                {% if option.name == 'Color' or option.name == 'color' or option.name == 'Colors' or option.name == 'colors' %}
+                  <div class="waches_color js {{ option.name | downcase }}">
+                    {% for value in option.values %}
+                      <input type="radio" id="Option{{ option.position }}-{{ value }}-{{ section.id}}-{{ product.id }}-{{ index0 }}" name="options[{{ option.name }}]" value="{{ value }}"{% if option.selected_value == value %} checked{% endif %}>
+                      <label class="color-label" for="Option{{ option.position }}-{{ value }}-{{ section.id}}-{{ product.id }}-{{ index0 }}" style="background-color: {{ value }};"></label>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                <!-- All Other Options -->
+                  <div class="custom_swaches js {{ option.name | downcase }}">
+                    {% for value in option.values %}
+                      <input type="radio" id="Option{{ option.position }}-{{ value }}-{{ section.id}}-{{ product.id }}-{{ index0 }}" name="options[{{ option.name }}]" value="{{ value }}"{% if option.selected_value == value %} checked{% endif %}>
+                      <label for="Option{{ option.position }}-{{ value }}-{{ section.id}}-{{ product.id }}-{{ index0 }}">{{ value }}</label>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endunless %}
+
+          <noscript>
+            <select name="id">
+              {% for variant in product.variants %}
+                <option
+                  {% if variant == current_variant %}selected="selected"{% endif %}
+                  {% unless variant.available %}disabled="disabled"{% endunless %}
+                  value="{{ variant.id }}">
+                    {{ variant.title }}
+                </option>
+              {% endfor %}
+            </select>
+          </noscript>
+        </div>
+        <!-- end variants -->
+
+        <div class="price-and-title">
+          <div data-price-wrapper>
+              <span data-product-price>
+                {{ current_variant.price | money }}
+              </span>
+              {% if product.compare_at_price_max > product.price %}
+                <span class="visually-hidden" data-compare-text>{{ 'products.product.regular_price' | t }}</span>
+                <s data-compare-price>
+                  {% if current_variant.compare_at_price > current_variant.price %}
+                    {{ current_variant.compare_at_price | money }}
+                  {% endif %}
+                </s>
+              {% endif %}
+          </div>
+          <p> — </p>
+          <p>{{ product.title }}</p>
+        </div>
+
+        <!-- desktop add to cart -->
+        <div class="actions desktop">
+          <button class="button"
+            type="submit"
+            name="add"
+            data-submit-button
+            {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+              <p data-submit-button-text>
+                {% if current_variant.available %}
+                  {{ 'products.product.add_to_cart' | t }}
+                {% else %}
+                  {{ 'products.product.sold_out' | t }}
+                {% endif %}
+              </p>
+          </button>
+        </div>
+
+        <!-- product description -->
+        <div class="description">
+          <div class="rte">
+            {{ product.description }}
+          </div>
+          <div class="pop-up-sizing">
+            <div data-app="eastsideco_sizeGuides"
+              data-shop="{{ shop.permanent_domain }}"
+              data-tags="{{ product.tags | join:',' | escape }}"
+              data-metafields="{{ product.metafields.esc-size-matters.tag }}"
+              data-popup="button"> <!-- change "link" to "button" for button format -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <input type="number" id="Quantity" name="quantity" value="1" min="1" style="display: none; pointer-events: none;">
+
+    {% endform %}
+  </div>
+  <!-- script:  -->
+  <script>
+    (function(d, s) {
+      // get element of type <header>
+      const headerElement = d.getElementsByTagName('header')[0]
+      // check if <header> element has class 'show-announcement'
+      const announcementVisible = headerElement.classList.contains('show-announcement')
+      if(announcementVisible) {
+        const productSection = d.getElementById('MainContent')
+        if(productSection) {
+          console.log('setting padding top')
+          productSection.style.paddingTop = '1.7em'
+        }
+      }
+    }(document, 'script'));
+    </script>
+  <!--  -->
+</section>
+
+{% schema %}
+  {
+    "name": "Product pages",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_share_buttons",
+        "label": "Show social sharing buttons",
+        "default": true
+      }
+    ]
+  }
+{% endschema %}

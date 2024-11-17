@@ -1,0 +1,18 @@
+<div class="socials">
+  <div class="social">
+    <a href="{{ section.settings.instagram-box }}"><img src="{{ 'instagram.svg' | asset_url }}" /></a>
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Social Media",
+    "settings": [
+      {
+        "id": "instagram-box",
+        "type": "text",
+        "label": "Instagram URL",
+        "default": "https://www.instagram.com/dcbureau"
+      }
+    ]
+  }
+{% endschema %}

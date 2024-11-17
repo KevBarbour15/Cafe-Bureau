@@ -1,0 +1,22 @@
+<section data-section-id="{{ section.id }}" data-section-type="filter">
+  <div class="tags">
+    <div class="button filter-toggle">
+      <p>Filters</p>
+    </div>
+    <div class="filters {% if request.page_type == "collection" and collection.title != "All" %}open{% endif %}">
+      {% for link in linklists.filters.links %} {% if link.active %}
+      <div class="button active">
+        <a href="/collections/all">{{ link.title }}</a>
+      </div>
+      {% else %}
+      <div class="button">
+        <a href="{{ link.url }}">{{ link.title }}</a>
+      </div>
+      {% endif %} {% endfor %}
+    </div>
+  </div>
+</section>
+{% schema %} { "name": "Filter", "blocks": [ { "type": "filter", "name":
+"Filter", "settings": [ { "id": "tag", "type": "text", "label": "Tag" } ] } ] }
+{% endschema %} {% stylesheet %} {% endstylesheet %} {% javascript %} {%
+endjavascript %}

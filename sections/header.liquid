@@ -1,0 +1,299 @@
+{%- comment -%}
+  This is a required section for the Shopify Theme Store.
+  It is available in the "Header" section in the theme editor.
+
+  Theme Store required settings
+  - Show announcement
+  - Text: message to announce
+  - Link: link of the announcement bar
+
+  Theme Store optional settings
+  - Home page only: only shows on the home page
+{%- endcomment -%}
+<section data-section-id="{{ section.id }}" data-section-type="header">
+
+    <!-- announcement -->
+    {%- if section.settings.announcement_bar_enabled -%}
+      {%- if section.settings.announcement_bar_home_page_only == false or template.name == 'index' -%}
+        <div class="announcement">
+          {%- if section.settings.announcement_bar_link != blank -%}
+            <a href="{{ section.settings.announcement_bar_link }}">
+              {{ section.settings.announcement_bar_text | escape }}
+            </a>
+          {%- else -%}
+            <p>{{ section.settings.announcement_bar_text | escape }}</p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+
+
+    {%- if section.settings.announcement_bar_enabled -%}
+      {%- if section.settings.announcement_bar_home_page_only == false or template.name == 'index' -%}
+        <header class="show-announcement" role="banner">
+      {%- else -%}          
+        <header class="main_header_sec" role="banner">
+      {%- endif -%}
+    {%- else -%}
+      <header class="main_header_sec" role="banner">
+    {%- endif -%}
+
+        
+<div class="mobile_main_menu_sec">
+<div>
+  <a id="hamburger" href="javascript:void(0)">
+    <span></span>
+    <span></span>
+    <span></span>
+  </a>
+</div>
+<div id="overlay">
+</div>
+<div id="drawer-menu">
+
+      <ul>
+        {% for link in linklists[section.settings.menu].links %}
+          <li class="parent-link">
+              {% if link.links != blank %}
+                <a class="link has-dropdown" href="{{ link.url }}">
+              {% else %}
+                <a class="link" href="{{ link.url }}">
+              {% endif %}
+                <div><p>{% if link.links != blank %}<span class="toggle-icon down">↓</span><span class="toggle-icon up">↑</span>{% endif %}<span class="link-title">{{ link.title }}</span></p></div>
+              </a>
+              {% if link.links != blank %}
+                <ul class="dropdown">
+                  {% if link.title == "Shop" %}
+                    <li class="shop-all-mobile"><a href="/collections/all"><p>Shop all</p></a>
+                  {% endif %} 
+                  {% for child_link in link.links %}  
+                    <li class="child-link"><a href= "{{ child_link.url }}"><p><span>↳</span> <span class="child-link-title">{{ child_link.title }}</span></p></a>
+                  {% endfor %}
+                </ul>
+              {% endif %} 
+          </li>
+        {% endfor %}
+      </ul>
+  <a id="close" href="javascript:void(0)">
+    <span></span>
+    <span></span>
+  </a>
+</div>
+</div>
+            
+  
+
+                  
+
+    <!-- Bureau Logo -->
+   <div class="logo">
+        {% if section.settings.logo != blank %}
+             <a href="/">
+               <div class="image_logo">
+               <img src="{{ section.settings.logo | img_url:"master" }}">
+               </div>
+            </a>
+        {% else %}
+        <a href="/">
+          <h1>Bureau.</h1>
+        </a>
+        {% endif %}
+      </div>
+
+
+  
+
+    <nav class="header_menu" role="navigation">
+      <ul>
+        {% for link in linklists[section.settings.menu].links %}
+          <li class="parent-link">
+              {% if link.links != blank %}
+                <a class="link has-dropdown" href="{{ link.url }}">
+              {% else %}
+                <a class="link" href="{{ link.url }}">
+              {% endif %}
+                <div><p>{% if link.links != blank %}<span class="toggle-icon down">↓</span><span class="toggle-icon up">↑</span>{% endif %}<span class="link-title">{{ link.title }}</span></p></div>
+              </a>
+              {% if link.links != blank %}
+                <ul class="dropdown">
+                  {% if link.title == "Shop" %}
+                    <li class="shop-all-mobile"><a href="/collections/all"><p>Shop all</p></a>
+                  {% endif %} 
+                  {% for child_link in link.links %}  
+                    <li class="child-link"><a href= "{{ child_link.url }}"><p><span>↳</span> <span class="child-link-title">{{ child_link.title }}</span></p></a>
+                  {% endfor %}
+                </ul>
+              {% endif %} 
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <div class="cart">
+      <div class="circle red">
+        <p>{{ cart.item_count }}</p>
+      </div>
+      <div>
+        {% include 'link', url: '/cart', title: 'cart' %}
+      </div>
+    </div>
+  </header>
+
+  <!-- fixed header -->
+  {%- if section.settings.announcement_bar_enabled -%}
+    {%- if section.settings.announcement_bar_home_page_only == false or template.name == 'index' -%}
+      <header id="fixed-header" class="fixed show-announcement" role="banner">
+    {%- else -%}          
+      <header id="fixed-header" class="fixed" role="banner">
+    {%- endif -%}
+  {%- else -%}
+    <header id="fixed-header" class="fixed" role="banner">
+  {%- endif -%}
+
+    <!-- Bureau Logo -->
+      <div class="logo itg">
+        {% if section.settings.logo != blank %}
+             <a href="/">
+               <div class="image_logo">
+               <img src="{{ section.settings.logo_bottom_Sticky | img_url:"master" }}">
+               </div>
+            </a>
+        {% else %}
+        <a href="/">
+          <h1>Bureau.</h1>
+        </a>
+        {% endif %}
+      </div>
+
+      <nav class="sticky_header_sec" role="navigation">
+        <ul>
+          {% for link in linklists[section.settings.menu].links %}
+            <li class="parent-link">
+                {% if link.links != blank %}
+                  <a class="link has-dropdown" href="{{ link.url }}">
+                {% else %}
+                  <a class="link" href="{{ link.url }}">
+                {% endif %}
+                  <div><p>{% if link.links != blank %}<span class="toggle-icon down">↓</span><span class="toggle-icon up">↑</span>{% endif %}<span class="link-title">{{ link.title }}</span></p></div>
+                </a>
+                {% if link.links != blank %}
+                  <ul class="dropdown">
+                    {% if link.title == "Shop" %}
+                      <li class="shop-all-mobile"><a href="/collections/all"><p>Shop all</p></a>
+                    {% endif %} 
+                    {% for child_link in link.links %}  
+                    <li class="child-link"><a href= "{{ child_link.url }}"><p><span>↳</span> <span class="child-link-title">{{ child_link.title }}</span></p></a>
+                    {% endfor %}
+                  </ul>
+                {% endif %} 
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+
+      <div class="cart">
+        <div class="circle red">
+          <p>{{ cart.item_count }}</p>
+        </div>
+        <div>
+          {% include 'link', url: '/cart', title: 'cart' %}
+        </div>
+      </div>
+    </header>
+
+</section>
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Announcement bar"
+      },
+      {
+        "type":"image_picker",
+        "id":"logo",
+        "label":"Logo"
+      },
+      {
+        "type":"image_picker",
+        "id":"logo_bottom_Sticky",
+        "label":"Logo Sticky"
+      },
+      {
+        "type": "checkbox",
+        "id": "announcement_bar_enabled",
+        "label": "Show announcement",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "announcement_bar_home_page_only",
+        "label": "Show on home page only",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "announcement_bar_text",
+        "label": "Announcement text",
+        "default": "Announce something here"
+      },
+      {
+        "type": "url",
+        "id": "announcement_bar_link",
+        "label": "Announcement link",
+        "info": "Optional"
+      },
+      {
+        "type": "header",
+        "content": "Header"
+      },
+      {
+        "type": "link_list",
+        "id": "menu",
+        "label": "Menu",
+        "default": "main-menu"
+      }
+    ]
+  }
+{% endschema %}
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "{{ shop.name }}",
+  {% if section.settings.logo %}
+    {% assign image_size = section.settings.logo.width | append:'x' %}
+    "logo": "https:{{ section.settings.logo | img_url: image_size }}",
+  {% endif %}
+  "sameAs": [
+    "{{ settings.social_twitter_link }}",
+    "{{ settings.social_facebook_link }}",
+    "{{ settings.social_pinterest_link }}",
+    "{{ settings.social_instagram_link }}",
+    "{{ settings.social_tumblr_link }}",
+    "{{ settings.social_snapchat_link }}",
+    "{{ settings.social_youtube_link }}",
+    "{{ settings.social_vimeo_link }}"
+  ],
+  "url": "{{ shop.url }}{{ page.url }}"
+}
+</script>
+
+{% if template.name == 'index' %}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "name": "{{ shop.name }}",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ shop.url }}/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "url": "{{ shop.url }}{{ page.url }}"
+    }
+  </script>
+{% endif %}
