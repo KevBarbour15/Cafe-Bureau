@@ -1,1 +1,0 @@
-window.HSSLIDECART.rewards = { json:[] }
