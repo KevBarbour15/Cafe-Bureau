@@ -1,299 +1,203 @@
-{%- comment -%}
-  This is a required section for the Shopify Theme Store.
-  It is available in the "Header" section in the theme editor.
+<link
+  rel='stylesheet'
+  href='{{ 'component-cart-notification.css' | asset_url }}'
+  media='print'
+  onload="this.media='all'"
+>
+<script src='{{ 'cart-notification.js' | asset_url }}' defer='defer'></script>
+<script src='{{ 'menu.js' | asset_url }}' defer='defer'></script>
 
-  Theme Store required settings
-  - Show announcement
-  - Text: message to announce
-  - Link: link of the announcement bar
+{% assign styles = 'tw-fixed tw-top-0 tw-w-full tw-h-[80px] tw-z-[100]' %}
+{% assign hamburger_styles = 'tw-w-[24px] tw-h-[1px] tw-rounded-full tw-absolute tw-z-[200]' %}
+{% assign cart_link_styles = 'tw-inline-flex tw-items-center tw-justify-center tw-gap-x-1 tw-cursor-pointer ' %}
+{% if request.page_type == 'index' %}
+  {% assign hamburger_styles = hamburger_styles | append: ' tw-bg-white' %}
+  {% assign cart_link_styles = cart_link_styles | append: ' tw-text-white' %}
+{% else %}
+  {% assign styles = styles | append: ' tw-mix-blend-difference tw-invert' %}
+  {% assign hamburger_styles = hamburger_styles | append: ' tw-bg-black' %}
+  {% assign cart_link_styles = cart_link_styles | append: ' tw-text-black' %}
+{% endif %}
 
-  Theme Store optional settings
-  - Home page only: only shows on the home page
-{%- endcomment -%}
-<section data-section-id="{{ section.id }}" data-section-type="header">
-
-    <!-- announcement -->
-    {%- if section.settings.announcement_bar_enabled -%}
-      {%- if section.settings.announcement_bar_home_page_only == false or template.name == 'index' -%}
-        <div class="announcement">
-          {%- if section.settings.announcement_bar_link != blank -%}
-            <a href="{{ section.settings.announcement_bar_link }}">
-              {{ section.settings.announcement_bar_text | escape }}
-            </a>
-          {%- else -%}
-            <p>{{ section.settings.announcement_bar_text | escape }}</p>
-          {%- endif -%}
-        </div>
-      {%- endif -%}
-    {%- endif -%}
-
-
-    {%- if section.settings.announcement_bar_enabled -%}
-      {%- if section.settings.announcement_bar_home_page_only == false or template.name == 'index' -%}
-        <header class="show-announcement" role="banner">
-      {%- else -%}          
-        <header class="main_header_sec" role="banner">
-      {%- endif -%}
-    {%- else -%}
-      <header class="main_header_sec" role="banner">
-    {%- endif -%}
-
-        
-<div class="mobile_main_menu_sec">
-<div>
-  <a id="hamburger" href="javascript:void(0)">
-    <span></span>
-    <span></span>
-    <span></span>
-  </a>
-</div>
-<div id="overlay">
-</div>
-<div id="drawer-menu">
-
-      <ul>
-        {% for link in linklists[section.settings.menu].links %}
-          <li class="parent-link">
-              {% if link.links != blank %}
-                <a class="link has-dropdown" href="{{ link.url }}">
-              {% else %}
-                <a class="link" href="{{ link.url }}">
-              {% endif %}
-                <div><p>{% if link.links != blank %}<span class="toggle-icon down">↓</span><span class="toggle-icon up">↑</span>{% endif %}<span class="link-title">{{ link.title }}</span></p></div>
-              </a>
-              {% if link.links != blank %}
-                <ul class="dropdown">
-                  {% if link.title == "Shop" %}
-                    <li class="shop-all-mobile"><a href="/collections/all"><p>Shop all</p></a>
-                  {% endif %} 
-                  {% for child_link in link.links %}  
-                    <li class="child-link"><a href= "{{ child_link.url }}"><p><span>↳</span> <span class="child-link-title">{{ child_link.title }}</span></p></a>
-                  {% endfor %}
-                </ul>
-              {% endif %} 
-          </li>
-        {% endfor %}
-      </ul>
-  <a id="close" href="javascript:void(0)">
-    <span></span>
-    <span></span>
-  </a>
-</div>
-</div>
-            
-  
-
-                  
-
-    <!-- Bureau Logo -->
-   <div class="logo">
-        {% if section.settings.logo != blank %}
-             <a href="/">
-               <div class="image_logo">
-               <img src="{{ section.settings.logo | img_url:"master" }}">
-               </div>
-            </a>
-        {% else %}
-        <a href="/">
-          <h1>Bureau.</h1>
+<menu-overlay>
+  <div
+    id='menu'
+    style='clip-path: polygon(-100% 0%, 0% 0%, 0% 100%, -100% 100%)'
+    class='tw-h-dvh tw-top-0 tw-fixed tw-w-screen tw-left-0 tw-z-[99] tw-bg-black  md:tw-w-[50vh] tw-p-lg'
+  >
+    <ul
+      class='tw-flex tw-flex-col  tw-uppercase tw-gap-2 tw-absolute tw-top-[100px] tw-left-lg tw-h-full'
+    >
+      <li class='menu-link'>
+        <a
+          class=' tw-inline-flex tw-items-center tw-justify-center tw-gap-x-6 tw-cursor-pointer'
+          href='/'
+          aria-label='Return to home page'
+        >
+          <span style='color: white;' class='h2 menu-link-text'>Home</span>
+          <span class='menu-link-arrow tw-opacity-0' aria-hidden='true'>
+            {%- render 'right-arrow', style: 'tw-fill-white', size: 28 -%}
+          </span>
         </a>
+      </li>
+      {% for link in linklists[section.settings.menu].links %}
+        <li class='menu-link'>
+          <a
+            class='tw-inline-flex tw-items-center tw-justify-center tw-gap-x-6 tw-cursor-pointer'
+            href='{{ link.url }}'
+            aria-label='Navigate to {{ link.title }}'
+            {% if link.current %}
+              aria-current='page'
+            {% endif %}
+          >
+            <span style='color: white;' class='menu-link-text h2'>{{ link.title }}</span>
+            <span class='menu-link-arrow tw-opacity-0' aria-hidden='true'>
+              {%- render 'right-arrow', style: 'tw-fill-white', size: 28 -%}
+            </span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <header class='{{ styles }}'>
+    <div class='tw-flex tw-items-center tw-justify-between tw-h-full tw-py-lg tw-px-lg'>
+      <div
+        id='hamburger'
+        class='tw-relative tw-w-[24px] tw-h-[15px] tw-cursor-pointer tw-z-[101]'
+      >
+        <div
+          id='hamburger-bar-1'
+          class='{{ hamburger_styles }} tw-top-0'
+        >
+          &nbsp;
+        </div>
+        <div
+          id='hamburger-bar-2'
+          class='{{ hamburger_styles }} tw-top-[7px]'
+        >
+          &nbsp;
+        </div>
+        <div
+          id='hamburger-bar-3'
+          class='{{ hamburger_styles }} tw-bottom-0'
+        >
+          &nbsp;
+        </div>
+      </div>
+
+      {% if request.page_type == 'index' %}
+        {% if section.settings.home_page_header_logo != blank %}
+          <a
+            href='/'
+            class='tw-absolute tw-top-1/2 tw-left-1/2 -tw-translate-x-1/2 -tw-translate-y-1/2 tw-cursor-pointer'
+          >
+            <img
+              src='{{ section.settings.home_page_header_logo | img_url: "master" }}'
+              alt='Home header logo'
+              width='{{ section.settings.home_page_header_logo.width }}'
+              height='{{ section.settings.home_page_header_logo.height }}'
+              class='tw-w-[125px] md:tw-w-[200px] tw-h-auto'
+            >
+          </a>
         {% endif %}
-      </div>
+      {% else %}
+        {% if section.settings.header_logo != blank %}
+          <a
+            href='/'
+            class='tw-absolute tw-top-1/2 tw-left-1/2 -tw-translate-x-1/2 -tw-translate-y-1/2 tw-cursor-pointer'
+          >
+            <img
+              src='{{ section.settings.header_logo | img_url: "master" }}'
+              alt='Header logo'
+              width='{{ section.settings.home_page_header_logo.width }}'
+              height='{{ section.settings.home_page_header_logo.height }}'
+              class='tw-w-[125px] md:tw-w-[200px] tw-h-auto'
+            >
+          </a>
+        {% endif %}
+      {% endif %}
 
+      <a
+        href='{{ routes.cart_url }}'
+        class='{{ cart_link_styles }}'
+        id='cart-link'
+        aria-label='View shopping cart{% if cart.item_count > 0 %} with {{ cart.item_count }} items{% endif %}'
+      >
+        <div
+          id='cart-icon'
+          class='tw-border tw-border-transparent tw-flex tw-items-center tw-justify-center tw-rounded-full tw-h-[16px] tw-md:tw-h-[20px] tw-aspect-square tw-w-full tw-relative tw-bg-[#5ffcf9] tw-translate-x-[20px]'
+        >
+          <p class='tw-text-lg tw-text-black tw-text-center tw-leading-none'>
+            {{- cart.item_count -}}
+          </p>
+        </div>
+        {% if request.page_type != 'index' %}
+          {% assign cart_arrow_styles = 'tw-fill-black' %}
+        {% else %}
+          {% assign cart_arrow_styles = 'tw-fill-white' %}
+        {% endif %}
 
-  
-
-    <nav class="header_menu" role="navigation">
-      <ul>
-        {% for link in linklists[section.settings.menu].links %}
-          <li class="parent-link">
-              {% if link.links != blank %}
-                <a class="link has-dropdown" href="{{ link.url }}">
-              {% else %}
-                <a class="link" href="{{ link.url }}">
-              {% endif %}
-                <div><p>{% if link.links != blank %}<span class="toggle-icon down">↓</span><span class="toggle-icon up">↑</span>{% endif %}<span class="link-title">{{ link.title }}</span></p></div>
-              </a>
-              {% if link.links != blank %}
-                <ul class="dropdown">
-                  {% if link.title == "Shop" %}
-                    <li class="shop-all-mobile"><a href="/collections/all"><p>Shop all</p></a>
-                  {% endif %} 
-                  {% for child_link in link.links %}  
-                    <li class="child-link"><a href= "{{ child_link.url }}"><p><span>↳</span> <span class="child-link-title">{{ child_link.title }}</span></p></a>
-                  {% endfor %}
-                </ul>
-              {% endif %} 
-          </li>
-        {% endfor %}
-      </ul>
-    </nav>
-
-    <div class="cart">
-      <div class="circle red">
-        <p>{{ cart.item_count }}</p>
-      </div>
-      <div>
-        {% include 'link', url: '/cart', title: 'cart' %}
-      </div>
+        <span id='cart-arrow' class='tw-opacity-0'>
+          {%- render 'right-arrow', style: cart_arrow_styles, size: 20 -%}
+        </span>
+        <span class='tw-text-base tw-uppercase md:tw-text-2xl tw-leading-[0.5]'>Cart</span>
+      </a>
     </div>
   </header>
+</menu-overlay>
 
-  <!-- fixed header -->
-  {%- if section.settings.announcement_bar_enabled -%}
-    {%- if section.settings.announcement_bar_home_page_only == false or template.name == 'index' -%}
-      <header id="fixed-header" class="fixed show-announcement" role="banner">
-    {%- else -%}          
-      <header id="fixed-header" class="fixed" role="banner">
-    {%- endif -%}
-  {%- else -%}
-    <header id="fixed-header" class="fixed" role="banner">
-  {%- endif -%}
+{%- if settings.cart_type == 'notification' -%}
+  {%- render 'cart-notification',
+    color_scheme: section.settings.color_scheme,
+    desktop_menu_type: section.settings.menu_type_desktop
+  -%}
+{%- endif -%}
 
-    <!-- Bureau Logo -->
-      <div class="logo itg">
-        {% if section.settings.logo != blank %}
-             <a href="/">
-               <div class="image_logo">
-               <img src="{{ section.settings.logo_bottom_Sticky | img_url:"master" }}">
-               </div>
-            </a>
-        {% else %}
-        <a href="/">
-          <h1>Bureau.</h1>
-        </a>
-        {% endif %}
-      </div>
-
-      <nav class="sticky_header_sec" role="navigation">
-        <ul>
-          {% for link in linklists[section.settings.menu].links %}
-            <li class="parent-link">
-                {% if link.links != blank %}
-                  <a class="link has-dropdown" href="{{ link.url }}">
-                {% else %}
-                  <a class="link" href="{{ link.url }}">
-                {% endif %}
-                  <div><p>{% if link.links != blank %}<span class="toggle-icon down">↓</span><span class="toggle-icon up">↑</span>{% endif %}<span class="link-title">{{ link.title }}</span></p></div>
-                </a>
-                {% if link.links != blank %}
-                  <ul class="dropdown">
-                    {% if link.title == "Shop" %}
-                      <li class="shop-all-mobile"><a href="/collections/all"><p>Shop all</p></a>
-                    {% endif %} 
-                    {% for child_link in link.links %}  
-                    <li class="child-link"><a href= "{{ child_link.url }}"><p><span>↳</span> <span class="child-link-title">{{ child_link.title }}</span></p></a>
-                    {% endfor %}
-                  </ul>
-                {% endif %} 
-            </li>
-          {% endfor %}
-        </ul>
-      </nav>
-
-      <div class="cart">
-        <div class="circle red">
-          <p>{{ cart.item_count }}</p>
-        </div>
-        <div>
-          {% include 'link', url: '/cart', title: 'cart' %}
-        </div>
-      </div>
-    </header>
-
-</section>
-
-{% schema %}
-  {
-    "name": "Header",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Announcement bar"
-      },
-      {
-        "type":"image_picker",
-        "id":"logo",
-        "label":"Logo"
-      },
-      {
-        "type":"image_picker",
-        "id":"logo_bottom_Sticky",
-        "label":"Logo Sticky"
-      },
-      {
-        "type": "checkbox",
-        "id": "announcement_bar_enabled",
-        "label": "Show announcement",
-        "default": false
-      },
-      {
-        "type": "checkbox",
-        "id": "announcement_bar_home_page_only",
-        "label": "Show on home page only",
-        "default": true
-      },
-      {
-        "type": "text",
-        "id": "announcement_bar_text",
-        "label": "Announcement text",
-        "default": "Announce something here"
-      },
-      {
-        "type": "url",
-        "id": "announcement_bar_link",
-        "label": "Announcement link",
-        "info": "Optional"
-      },
-      {
-        "type": "header",
-        "content": "Header"
-      },
-      {
-        "type": "link_list",
-        "id": "menu",
-        "label": "Menu",
-        "default": "main-menu"
-      }
-    ]
-  }
-{% endschema %}
-
-<script type="application/ld+json">
-{
-  "@context": "http://schema.org",
-  "@type": "Organization",
-  "name": "{{ shop.name }}",
-  {% if section.settings.logo %}
-    {% assign image_size = section.settings.logo.width | append:'x' %}
-    "logo": "https:{{ section.settings.logo | img_url: image_size }}",
-  {% endif %}
-  "sameAs": [
-    "{{ settings.social_twitter_link }}",
-    "{{ settings.social_facebook_link }}",
-    "{{ settings.social_pinterest_link }}",
-    "{{ settings.social_instagram_link }}",
-    "{{ settings.social_tumblr_link }}",
-    "{{ settings.social_snapchat_link }}",
-    "{{ settings.social_youtube_link }}",
-    "{{ settings.social_vimeo_link }}"
-  ],
-  "url": "{{ shop.url }}{{ page.url }}"
-}
-</script>
-
-{% if template.name == 'index' %}
-  <script type="application/ld+json">
+{%- if request.page_type == 'index' -%}
+  {% assign potential_action_target = request.origin | append: routes.search_url | append: '?q={search_term_string}' %}
+  <script type='application/ld+json'>
     {
       "@context": "http://schema.org",
       "@type": "WebSite",
-      "name": "{{ shop.name }}",
+      "name": {{ shop.name | json }},
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "{{ shop.url }}/search?q={search_term_string}",
+        "target": {{ potential_action_target | json }},
         "query-input": "required name=search_term_string"
       },
-      "url": "{{ shop.url }}{{ page.url }}"
+      "url": {{ request.origin | append: page.url | json }}
     }
   </script>
-{% endif %}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "image_picker",
+      "id": "home_page_header_logo",
+      "label": "Home Page HeaderLogo",
+      "info": "This logo will be used for the header on the home page. Ideally, this should be a transparent PNG with white text."
+    },
+    {
+      "type": "image_picker",
+      "id": "header_logo",
+      "label": "Header Logo",
+      "info": "This logo will be used for the header on all pages except the home page. Ideally, this should be a transparent PNG with black text."
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "info": "Select the menu to display in the header navigation",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}
